@@ -1,0 +1,15 @@
+.App {
+  text-align: center;
+}
+
+.home-img {
+  height: 300px;
+  width: 500px;
+  background-position: center;
+}
+
+.home-Kategorie {
+  display: flex;
+  align-items: flex-end;
+  justify-content: end;
+}
