@@ -13,9 +13,11 @@ import {
   Col,
 } from 'react-bootstrap';
 import { data, a } from './data.js';
+import { Detail } from './Detail.js';
+import { Routes, Route, Link } from 'react-router-dom';
 
 function App() {
-  let [item] = useState(data);
+  let [item, setItem] = useState(data);
 
   return (
     <div className="App">
@@ -76,27 +78,66 @@ function App() {
           </Navbar>
         ))}
       </div>
-      <div>
-        <img src={process.env.PUBLIC_URL + '/beach.jpg'} className="home-img" />
-      </div>
-      <Container ClassName="home-Kategorie">
-        <Row>
-          {item.map(function (a, i) {
-            return <HomeItem item={item[i]} />;
-          })}
-          {/* <HomeItem item={item[0]} />
-          <HomeItem item={item[1]} />
-          <HomeItem item={item[2]} /> */}
-        </Row>
-      </Container>
+      <Routes>
+        <Route
+          // 홈 이미지 + 홈이미지 생성 맵
+          path="/"
+          element={
+            <>
+              <div>
+                <img
+                  src={process.env.PUBLIC_URL + '/beach.jpg'}
+                  className="home-img"
+                />
+              </div>
+              <Container ClassName="home-Kategorie">
+                <Row>
+                  {item.map(function (a, i) {
+                    return <HomeItem item={item[i]} i={i} />;
+                  })}
+                </Row>
+              </Container>
+            </>
+          }
+        />
+        <Route path="/detail/:id" element={<Detail item={item} />} />
+        <Route path="/about" />
+      </Routes>
+      {/* 정렬 버튼 */}
+      <button
+        onClick={() => {
+          let copy = [...item];
+          copy.sort(function (a, b) {
+            if (a.title < b.title) {
+              return -1;
+            }
+            if (a.title > b.title) {
+              return 1;
+            }
+            return 0;
+          });
+          setItem(copy);
+        }}
+      >
+        정렬
+      </button>
     </div>
   );
 }
 
+// 메인페이지 아이템 생성 컴포넌트
 function HomeItem(props) {
   return (
     <Col>
-      <img src={process.env.PUBLIC_URL + '/shirts.jpg'} />
+      <img
+        src={
+          process.env.PUBLIC_URL +
+          'https://codingapple1.github.io/shop/shoes' +
+          [props.item.id + 1] +
+          '.jpg'
+        }
+        width="70%"
+      />
       <h4>{props.item.title}</h4>
       <p>{props.item.content}</p>
       <p>{props.item.price}</p>

@@ -13,3 +13,9 @@
   align-items: flex-end;
   justify-content: end;
 }
+
+.container {
+  display: flex;
+  height: 200px;
+  width: 400px;
+}

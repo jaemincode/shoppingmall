@@ -23,4 +23,4 @@ let data = [
 
 let a = 10;
 
-export { data, a };
+export { data };
