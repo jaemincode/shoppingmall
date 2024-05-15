@@ -1,6 +1,6 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Container,
@@ -15,9 +15,12 @@ import {
 import { data, a } from './data.js';
 import { Detail } from './Detail.js';
 import { Routes, Route, Link } from 'react-router-dom';
+import axios from 'axios';
 
 function App() {
   let [item, setItem] = useState(data);
+  let [count, setCount] = useState(0);
+  let [loading, setLoading] = useState(false);
 
   return (
     <div className="App">
@@ -97,30 +100,54 @@ function App() {
                   })}
                 </Row>
               </Container>
+              {/*정렬 버튼 */}
+              <button
+                onClick={() => {
+                  let copy = [...item];
+                  copy.sort(function (a, b) {
+                    if (a.title < b.title) {
+                      return -1;
+                    }
+                    if (a.title > b.title) {
+                      return 1;
+                    }
+                    return 0;
+                  });
+                  setItem(copy);
+                }}
+              >
+                정렬
+              </button>
+              <button
+                onClick={() => {
+                  setLoading(true);
+                  setCount(count + 1);
+                  axios
+                    .get(
+                      'https://codingapple1.github.io/shop/data' +
+                        [count + 2] +
+                        '.json'
+                    )
+                    .then((result) => {
+                      let copy = [...item, ...result.data];
+                      setItem(copy);
+                      setLoading(false);
+                    })
+                    .catch(() => {
+                      alert('상품이 없습니다.');
+                      setLoading(false);
+                    });
+                }}
+              >
+                버튼
+              </button>
+              <div> {loading == true ? <h3>로딩중입니다.</h3> : null} </div>
             </>
           }
         />
         <Route path="/detail/:id" element={<Detail item={item} />} />
         <Route path="/about" />
       </Routes>
-      {/* 정렬 버튼 */}
-      <button
-        onClick={() => {
-          let copy = [...item];
-          copy.sort(function (a, b) {
-            if (a.title < b.title) {
-              return -1;
-            }
-            if (a.title > b.title) {
-              return 1;
-            }
-            return 0;
-          });
-          setItem(copy);
-        }}
-      >
-        정렬
-      </button>
     </div>
   );
 }
